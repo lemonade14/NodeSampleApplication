@@ -1,0 +1,21 @@
+{
+  "name": "node",
+  "description": "Nodejs Sample Application",
+  "main": "app.js",
+  "authors": [
+    "lemonade14"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/lemonade14/NodeSampleApplication",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^2.2.3"
+  }
+}
