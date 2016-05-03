@@ -1,0 +1,8 @@
+.DS_STORE
+*.swp
+*.swo
+node_modules/
+bower_components/
+
+npm-debug.log.*
+

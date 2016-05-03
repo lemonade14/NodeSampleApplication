@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8">
+    <title>Node Express WebSocket Sample</title>
+    <script src="/jquery/dist/jquery.min.js"></script>
+    <style>
+      #js-page-login label {
+        display: block;
+        width: 80%;
+        margin: 20px auto;
+        text-align: center;
+      }
+
+      #js-page-summary {
+        display: none;
+      }
+
+      #js-page-summary ul {
+        display: flex;
+      }
+      #js-page-summary li {
+        list-style: none;
+        width: 280px;
+        text-align: center;
+        margin: 0 10px 10px 10px;
+      }
+      #js-page-summary h3 {
+        margin: 0;
+        text-align: left;
+        font-size: 16px;
+        background: black;
+        color: white;
+      }
+      #js-page-summary table {
+        width: 100%;
+        background: rgba(128, 128, 128, 0.1);
+        padding: 5px 10px;
+      }
+      .box-animation {
+        animation: Flash4 1s infinite;
+      }
+
+      /* アニメーション */
+      @keyframes Flash4{
+        50%{
+          box-shadow: 0 1px 15px 1px blue;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <section id="js-page-login">
+      <label>
+        ユーザID：
+        <input type="text" name="userId" value="" placeholder="ユーザIDを入力して下さい">
+      </label>
+      <label>
+        パスワード
+        <input type="password" name="passWord" value="" placeholder="パスワードを入力して下さい">
+      </label>
+      <label>
+        <button id="js-login-btn">Login</button>
+      </label>
+    </section>
+
+    <section id="js-page-summary">
+      <h2>ユニットA 現在サマリー</h2>
+      <div>
+        <ul id="js-summary-list">
+        </ul>
+      </div>
+
+
+    </section>
+
+    <script>
+      window.onload = function() {
+        // TODO: 本来はAngularで実装だがここは生jQueryで簡易的に
+        $('#js-login-btn').click(function(){
+          var userId   = $('#js-page-login input[name="userId"]').val();
+          var passWord = $('#js-page-login input[name="passWord"]').val();
+          console.log(userId);
+          console.log(passWord);
+          $.ajax({
+            url: "/api/login",
+            success: function(data) {
+              alert('ログインしました!!');
+              $('#js-page-login').hide();
+              $('#js-page-summary').show();
+              onPageChangeSummary();
+            },
+            error: function(data) {
+               alert('error!!!');
+            }
+          });
+        });
+
+        // page summaryが読み込まれた時
+        function onPageChangeSummary() {
+           $.ajax({
+            url: "/api/summary",
+            success: function(res) {
+              onLoadSummary(res);
+            }
+          });
+        }
+
+        function onLoadSummary(res) {
+          console.log(res);
+          if (res.data) {
+            for (var i = 0; i < res.data.length; i++) {
+              console.log(res.data[i]);
+              var userId = res.data[i].id;
+              var userName = res.data[i].userName;
+              var bodyTemperature = res.data[i].bodyTemperature;
+              var pulse = res.data[i].pulse;
+              var bloodPressure = res.data[i].bloodPressure;
+              var hElem = '<h3>' + userName + 'さん</h3>';
+              var tableElem = '<table><tr><th>体温</th><th>脈</th><th>血圧</th></tr>' + 
+                              '<tr><td class="bodyTemperature">' + bodyTemperature + '℃</td>' + 
+                              '<td class="pulse">' + pulse + '</td>' + 
+                              '<td class="bloodPressure">' + bloodPressure + '</td></tr></table>';
+              $('#js-summary-list').append('<li id="js-user-' + userId + '">' + hElem + tableElem + '</li>');
+            }
+          }
+        }
+
+      }
+    </script>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      var socket = io.connect('http://localhost:3000/api/socket');
+      socket.on('updateSummaryData', function (data) {
+
+        if ($(''))
+        console.log(data);
+        var userId = data.id;
+        var bodyTemperature = data.bodyTemperature;
+        var pulse = data.pulse;
+        var bloodPressure = data.bloodPressure;
+
+        var selector = '#js-user-' + userId;
+        if ($(selector).get(0)) {
+          $(selector + ' .bodyTemperature').text(bodyTemperature + '℃');
+          $(selector + ' .pulse').text(pulse);
+          $(selector + ' .bloodPressure').text(bloodPressure);
+
+          // 変更アニメーション
+          $(selector).addClass('box-animation');
+          setTimeout(function(){
+            $(selector).removeClass('box-animation');
+          }, 1500);
+
+          // サーバに受信したことを通知
+          var sessionId = 121012;
+          socket.emit('completeUpdate', { sessionId: sessionId });
+        }
+
+      });
+    </script>
+  </body>
+</html>
+

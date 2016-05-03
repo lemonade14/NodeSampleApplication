@@ -1,0 +1,23 @@
+{
+  "name": "node",
+  "version": "1.0.0",
+  "description": "Nodejs Sample Application",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lemonade14/NodeSampleApplication.git"
+  },
+  "author": "lemonade14",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lemonade14/NodeSampleApplication/issues"
+  },
+  "homepage": "https://github.com/lemonade14/NodeSampleApplication#readme",
+  "dependencies": {
+    "express": "^4.13.4",
+    "socket.io": "^1.4.5"
+  }
+}
