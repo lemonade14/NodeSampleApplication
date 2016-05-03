@@ -23,7 +23,7 @@
         list-style: none;
         width: 280px;
         text-align: center;
-        padding: 0 10px 10px 10px;
+        margin: 0 10px 10px 10px;
       }
       #js-page-summary h3 {
         margin: 0;
@@ -37,7 +37,16 @@
         background: rgba(128, 128, 128, 0.1);
         padding: 5px 10px;
       }
+      .box-animation {
+        animation: Flash4 1s infinite;
+      }
 
+      /* アニメーション */
+      @keyframes Flash4{
+        50%{
+          box-shadow: 0 1px 15px 1px blue;
+        }
+      }
     </style>
   </head>
   <body>
@@ -102,11 +111,12 @@
           if (res.data) {
             for (var i = 0; i < res.data.length; i++) {
               console.log(res.data[i]);
-              var userId = res.data[i].userId;
+              var userId = res.data[i].id;
+              var userName = res.data[i].userName;
               var bodyTemperature = res.data[i].bodyTemperature;
               var pulse = res.data[i].pulse;
               var bloodPressure = res.data[i].bloodPressure;
-              var hElem = '<h3>◯◯さん</h3>';
+              var hElem = '<h3>' + userName + 'さん</h3>';
               var tableElem = '<table><tr><th>体温</th><th>脈</th><th>血圧</th></tr>' + 
                               '<tr><td class="bodyTemperature">' + bodyTemperature + '℃</td>' + 
                               '<td class="pulse">' + pulse + '</td>' + 
@@ -119,18 +129,37 @@
       }
     </script>
 
-    <!--
     <script src="/socket.io/socket.io.js"></script>
     <script>
       var socket = io.connect('http://localhost:3000/api/socket');
-      // 通知を受信
-      socket.on('news', function (data) {
+      socket.on('updateSummaryData', function (data) {
+
+        if ($(''))
         console.log(data);
-        // サーバに受信したことを通知
-        socket.emit('my other event', { my: 'data' });
+        var userId = data.id;
+        var bodyTemperature = data.bodyTemperature;
+        var pulse = data.pulse;
+        var bloodPressure = data.bloodPressure;
+
+        var selector = '#js-user-' + userId;
+        if ($(selector).get(0)) {
+          $(selector + ' .bodyTemperature').text(bodyTemperature + '℃');
+          $(selector + ' .pulse').text(pulse);
+          $(selector + ' .bloodPressure').text(bloodPressure);
+
+          // 変更アニメーション
+          $(selector).addClass('box-animation');
+          setTimeout(function(){
+            $(selector).removeClass('box-animation');
+          }, 1500);
+
+          // サーバに受信したことを通知
+          var sessionId = 121012;
+          socket.emit('completeUpdate', { sessionId: sessionId });
+        }
+
       });
     </script>
-    -->
   </body>
 </html>
 

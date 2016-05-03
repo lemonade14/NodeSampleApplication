@@ -20,7 +20,7 @@ app.use('/api', apiRouter);
 
 // ソケット通信の設定(基本的にファイル名と名前空間は同じとする)
 //    -> /api/socket
-//var apiSocketRouter  = require('./routes/api/socket');
-//apiSocketRouter(io);
+var apiSocketRouter  = require('./routes/api/socket');
+apiSocketRouter(io);
 
 
