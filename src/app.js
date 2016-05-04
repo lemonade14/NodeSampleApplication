@@ -14,13 +14,13 @@ app.get('/', function (req, res, next) {
 });
 
 // ルーティングの設定
-var apiRouter        = require('./routes/api/index');
+var apiRouter        = require('./app/routes/api/index');
 app.use('/api', apiRouter);
 
 
 // ソケット通信の設定(基本的にファイル名と名前空間は同じとする)
 //    -> /api/socket
-var apiSocketRouter  = require('./routes/api/socket');
+var apiSocketRouter  = require('./app/routes/api/socket');
 apiSocketRouter(io);
 
 
