@@ -7,11 +7,11 @@ var io = require('socket.io')(server);
 server.listen(3000);
 
 // 静的なファイルはここで返す
+app.use(express.static('src/bower_components'));
 // TODO: 本来はS3などから配信したい（APIと静的ファイルは別にしたい）
 app.get('/', function (req, res, next) {
   res.sendfile(__dirname + '/index.html');
 });
-app.use(express.static('bower_components'));
 
 // ルーティングの設定
 var apiRouter        = require('./routes/api/index');
